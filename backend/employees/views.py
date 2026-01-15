@@ -38,6 +38,38 @@ class EmployeeListCreateAPIView(APIView):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
   
 
+class EmployeeDetailAPIView(APIView):
+
+  def get_object(self, id):
+    try:
+      return Employee.objects.get(id=id)
+    except Employee.DoesNotExist:
+      return None
+  
+  def get(self, request, id):
+    employee = self.get_object(id)
+    if not employee:
+      return Response(status=status.HTTP_404_NOT_FOUND)
+    serializer = EmployeeSerializer(employee)
+    return Response(serializer.data)
+  
+  def put(self, request, id):
+    employee = self.get_object(id)
+    if not employee:
+      return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    serializer = EmployeeSerializer(employee, data=request.data)
+    if serializer.is_valid():
+      serializer.save()
+      return Response(serializer.data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+  
+  def delete(self, request, id):
+    employee = self.get_object(id)
+    if not employee:
+      return Response(status=status.HTTP_404_NOT_FOUND)
+    employee.delete()
+    return Response({"message": "Employee deleted"}, status=status.HTTP_204_NO_CONTENT)
 
 
 
