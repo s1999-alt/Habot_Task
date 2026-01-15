@@ -26,6 +26,7 @@ class EmployeeTests(APITestCase):
         department="Engineering",
         role="Developer"
     )
+
   
   def test_create_employee(self):
     response = self.client.post('/api/employees/', {
@@ -49,6 +50,59 @@ class EmployeeTests(APITestCase):
         "email": "empty@test.com"
     })
     self.assertEqual(response.status_code, 400)
+
+
+  def test_list_employees(self):
+    response = self.client.get('/api/employees/')
+    self.assertEqual(response.status_code, 200)
+    self.assertTrue(len(response.data) >= 1)
+  
+
+  def test_filter_by_department(self):
+    response = self.client.get('/api/employees/?department=Engineering')
+    self.assertEqual(response.status_code, 200)
+
+  def test_filter_by_role(self):
+    response = self.client.get('/api/employees/?role=Developer')
+    self.assertEqual(response.status_code, 200)
+  
+
+  def test_get_single_employee(self):
+    response = self.client.get(f'/api/employees/{self.employee.id}/')
+    self.assertEqual(response.status_code, 200)
+
+  def test_get_invalid_employee(self):
+    response = self.client.get('/api/employees/9999/')
+    self.assertEqual(response.status_code, 404)
+
+  
+  def test_update_employee(self):
+    response = self.client.put(
+      f'/api/employees/{self.employee.id}/',
+      {
+        "name": "Adam Updated",
+        "email": "adam@test.com",
+        "department": "Engineering",
+        "role": "Senior Developer"
+      },
+      format='json'
+    )
+    self.assertEqual(response.status_code, 200)
+
+  
+  def test_delete_employee(self):
+    response = self.client.delete(f'/api/employees/{self.employee.id}/')
+    self.assertEqual(response.status_code, 204)
+
+  def test_delete_invalid_employee(self):
+    response = self.client.delete('/api/employees/9999/')
+    self.assertEqual(response.status_code, 404)
+
+
+  def test_unauthenticated_access(self):
+    self.client.credentials() 
+    response = self.client.get('/api/employees/')
+    self.assertEqual(response.status_code, 401)
 
 
 
