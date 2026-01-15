@@ -8,7 +8,6 @@ from .models import Employee
 from .serializers import EmployeeSerializer
 
 
-
 class EmployeeListCreateAPIView(APIView):
   permission_classes = [permissions.IsAuthenticated]
 
@@ -39,7 +38,6 @@ class EmployeeListCreateAPIView(APIView):
   
 
 class EmployeeDetailAPIView(APIView):
-
   def get_object(self, id):
     try:
       return Employee.objects.get(id=id)
