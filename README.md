@@ -57,7 +57,7 @@ Habot_Task/
 ### 1️⃣ Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/s1999-alt/Habot_Task.git
 cd Habot_Task
 ```
 
